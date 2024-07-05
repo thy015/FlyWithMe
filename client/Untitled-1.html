@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- header -->
+    <title>Navigation Bar</title>
+    <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <header>
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="#">ĐẶT CHỖ</a></li>
+                    <li><a href="#">QUẢN LÝ</a></li>
+                    <li><a href="#">TRẢI NGHIỆM</a></li>
+                    <li><a href="#">CÁC ĐIỂM ĐẾN CỦA CHÚNG TÔI</a></li>
+                    <li><a href="#">KHÁCH HÀNG THÂN THIẾT</a></li>
+                    <li><a href="#">TRỢ GIÚP</a></li>
+                </ul>
+                <ul class="nav-icons">
+                    <li><a href="#">VN</a></li>
+                    <li><a href="#">&#128269;</a></li>
+                    <li><a href="#">&#128100; ĐĂNG NHẬP</a></li>
+                </ul>
+            </nav>
+
+            <button class="search-button">Tìm kiếm chuyến bay</button>
+            <!-- đặt chỗ -->
+            <div class="container">
+                <h2>Đặt chỗ chuyến bay</h2>
+                <p>Tìm kiếm các chuyến bay Emirates và đặt vé trực tuyến. Xem các tuyến đường và lịch trình của chúng
+                    tôi, đồng thời khám phá thêm về trải nghiệm bạn có thể mong đợi trên chuyến bay.</p>
+
+                <form id="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="origin">Sân bay khởi hành:</label>
+                            <input type="text" id="origin" value="Thành phố Hồ Chí Minh (SGN)" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destination">Sân bay đến:</label>
+                            <input type="text" id="destination">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="departure">Khởi hành:</label>
+                            <input type="date" id="departure">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="return">Khứ hồi:</label>
+                            <input type="date" id="return">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passengers">Hành khách:</label>
+                            <select id="passengers">
+                                <option value="1">1 Người lớn</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="class">Hạng:</label>
+                            <select id="class">
+                                <option value="economy">Hạng Phổ thông</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit">Tìm kiếm chuyến bay</button>
+                </form>
+
+                <p>Đăng nhập để tích lũy và sử dụng Dặm thưởng Skywards</p>
+                <a href="#">Tìm kiếm nâng cao: nhiều thành phố, mã khuyến mãi, hãng hàng không đối tác ></a>
+            </div>
+            <div class="container">
+                <h3>Cách đặt vé máy bay với Emirates</h3>
+                <h4>Đặt vé máy bay trực tuyến</h4>
+                <p>Để tìm vé máy bay phù hợp cho chuyến đi của bạn, chỉ cần nhập địa điểm mà bạn khởi hành và điểm đến
+                    của chuyến bay. Nhập ngày tháng, hạng bay và số lượng hành khách. Chọn 'Tìm kiếm chuyến bay' để tiếp
+                    tục quy trình đặt vé máy bay trực tuyến và đặt vé máy bay phù hợp với kế hoạch du lịch của bạn.</p>
+                <h4>So sánh giá vé máy bay</h4>
+                <p>Hãy chú ý nhãn Đảm bảo giá tốt nhất của chúng tôi để đảm bảo bạn sẽ nhận được giá vé máy bay tốt nhất
+                    khi đặt chuyến bay với Emirates.</p>
+            </div>
+            </div>
+    </body>
+
+</html>
