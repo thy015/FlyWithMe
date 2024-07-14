@@ -6,21 +6,25 @@ export const routers=[
     {
         path:'/',
         page:Home,
-        isShowHeader:true
+        isShowHeader:true,
+        isShowFooter:true
     },
     {
         path:'/BookFlight',
         page:BookFlight,
-        isShowHeader:true
+        isShowHeader:true,
+        isShowFooter:true
     },
     {
         path:'/SignUp',
         page:SignUp,
-        isShowHeader:true
+        isShowHeader:true,
+        isShowFooter:true
     },
     {
         path:'/*',
         page:Nothing,
-        isShowHeader:false
+        isShowHeader:false,
+        isShowFooter:false
     }
 ]

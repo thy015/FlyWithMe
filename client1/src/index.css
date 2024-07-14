@@ -9,13 +9,7 @@ body {
     background-color: #f2f2f2;
   }
   
-  .container {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    align-items: center;
-  }
+
   
   .form-group {
     margin-bottom: 15px;
@@ -63,18 +57,6 @@ body {
       color: #d71920;
       text-align: center;
   }
-  
-  p {
-      text-align: center;
-      color: #333;
-  }
-  
-  #booking-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-  }
-  
   .form-row {
       display: flex;
       gap: 15px;
@@ -116,22 +98,15 @@ body {
       background-color: #e2e2e2;
   }
   
-  a {
-      color: #d71920;
-      text-decoration: none;
-      text-align: center;
-      display: block;
-      margin-top: 20px;
-  }
-  
+
   a:hover {
+    color: #003278;
       text-decoration: underline;
   }
   
   h3 {
       color: #333;
       text-align: center;
-      margin-top: 50px;
   }
   /*header */
 

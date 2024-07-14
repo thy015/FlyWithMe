@@ -1,5 +1,6 @@
 import React from 'react'
 import '../index.css'
+import {Link} from 'react-router-dom'
 const Header = ({children}) => {
   return (
     <div>
@@ -14,8 +15,11 @@ const Header = ({children}) => {
                 </ul>
                 <ul class="flex space-x-5">
                     <li><p class="text-white font-bold">VN</p></li>
-                    <li><p class="text-white font-bold">&#128269;</p></li>
-                    <li><p class="text-white font-bold">&#128100; ĐĂNG NHẬP</p></li>
+                    <li>
+        <Link to="/SignUp" className="no-underline text-white font-bold">
+          ĐĂNG NHẬP
+        </Link>
+      </li>
                 </ul>
             </nav>
             {children}
