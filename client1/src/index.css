@@ -20,16 +20,12 @@ body {
     margin-bottom: 5px;
   }
   
-  input[type="text"],
-  input[type="date"],
-  select {
-    width: 100%;
+  input[type="text"], input[type="date"], select {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
+    border-radius: 5px;
+    color: black;
+}
   button[type="submit"] {
     background-color: #e50914; /* Màu đỏ của Emirates */
     color: white;
