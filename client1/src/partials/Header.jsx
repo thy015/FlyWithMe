@@ -13,7 +13,9 @@ const Header = ({ children }) => {
             </Link>
           </li>
           <li>
+          <Link to="/Control" className="no-underline">
             <p class="text-white font-bold">QUẢN LÝ</p>
+            </Link>
           </li>
           <li>
             <p class="text-white font-bold">TRẢI NGHIỆM</p>

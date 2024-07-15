@@ -2,6 +2,7 @@ import Home from '../pages/Home';
 import BookFlight from "../pages/BookFlight";
 import SignUp from "../pages/SignUp";
 import Nothing from "../pages/Nothing";
+import Control from '../pages/Control';
 export const routers=[
     {
         path:'/',
@@ -18,6 +19,12 @@ export const routers=[
     {
         path:'/SignUp',
         page:SignUp,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/Control',
+        page:Control,
         isShowHeader:true,
         isShowFooter:true
     },
