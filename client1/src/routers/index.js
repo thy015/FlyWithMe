@@ -4,6 +4,9 @@ import SignUp from "../pages/SignUp";
 import Nothing from "../pages/Nothing";
 import Control from '../pages/Control';
 import Passengers from '../pages/Passengers';
+import PlaceToCome from '../pages/PlaceToCome';
+import IpFutures from '../pages/IpFutures';
+import Help from '../pages/Help';
 export const routers=[
     {
         path:'/',
@@ -32,6 +35,24 @@ export const routers=[
     {
         path:'/Control',
         page:Control,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/PlaceToCome',
+        page:PlaceToCome,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/IpFutures',
+        page:IpFutures,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/Help',
+        page:Help,
         isShowHeader:true,
         isShowFooter:true
     },

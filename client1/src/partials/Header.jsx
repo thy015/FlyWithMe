@@ -18,16 +18,19 @@ const Header = ({ children }) => {
             </Link>
           </li>
           <li>
+          <Link to="/IpFutures" className="no-underline">
             <p class="text-white font-bold">TRẢI NGHIỆM</p>
+            </Link>
           </li>
           <li>
+          <Link to="/PlaceToCome" className="no-underline">
             <p class="text-white font-bold">CÁC ĐIỂM ĐẾN CỦA CHÚNG TÔI</p>
+            </Link>
           </li>
           <li>
-            <p class="text-white font-bold">KHÁCH HÀNG THÂN THIẾT</p>
-          </li>
-          <li>
+          <Link to="/Help" className="no-underline">
             <p class="text-white font-bold">TRỢ GIÚP</p>
+            </Link>
           </li>
         </ul>
         <ul class="flex space-x-5">

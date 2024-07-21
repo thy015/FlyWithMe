@@ -118,7 +118,6 @@ const BookFlight = () => {
               </Link>
             </div>
           ))}
-          <Button className="float-right">Tiếp theo</Button>
         </div>
       </div>
     </div>
