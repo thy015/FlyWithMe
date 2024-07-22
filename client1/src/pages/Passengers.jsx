@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Passengers = () => {
   return (
@@ -41,11 +42,13 @@ const Passengers = () => {
         >
           Add Passenger
         </button>
+        <Link to='/BookFlight/Passengers/Options'>
         <button
           className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
         >
           Next
         </button>
+        </Link>
       </div>
     </div>
     

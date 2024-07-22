@@ -7,6 +7,9 @@ import Passengers from '../pages/Passengers';
 import PlaceToCome from '../pages/PlaceToCome';
 import IpFutures from '../pages/IpFutures';
 import Help from '../pages/Help';
+import Options from '../pages/Options';
+import Payment from '../pages/Payment';
+import Done from '../pages/Done';
 export const routers=[
     {
         path:'/',
@@ -23,6 +26,24 @@ export const routers=[
     {
         path:'/BookFlight/Passengers',
         page:Passengers,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/BookFlight/Passengers/Options',
+        page:Options,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/BookFlight/Passengers/Options/Payment',
+        page:Payment,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/BookFlight/Passengers/Options/Payment/Done',
+        page:Done,
         isShowHeader:true,
         isShowFooter:true
     },

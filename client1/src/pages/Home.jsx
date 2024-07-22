@@ -40,16 +40,15 @@ const Home = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const flightData = {
-      origin: selectedOrigin,
-      destination: selectedDestination,
-    };
 
     axios
-      .post("http://localhost:4000/BookFlight", flightData)
+      .post("http://localhost:4000/BookFlight")
       .then((response) => {
         console.log("Flight data sent successfully:", response.data);
-        navigate(`/BookFlight`, { state: flightData });
+        navigate(`/BookFlight`, { state: {
+          origin: selectedOrigin,
+          destination: selectedDestination,
+        } });
       })
       .catch((error) => {
         console.error("There was an error sending the flight data!", error);
