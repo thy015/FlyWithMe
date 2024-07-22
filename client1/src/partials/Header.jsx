@@ -1,7 +1,9 @@
 import React from "react";
 import "../index.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/AuthContext";
 const Header = ({ children }) => {
+  const { authState } = useAuth(); 
   return (
     <div>
       <nav class="bg-gray-800 flex justify-between items-center p-4">
@@ -38,9 +40,13 @@ const Header = ({ children }) => {
             <p class="text-white font-bold">VN</p>
           </li>
           <li>
-            <Link to="/SignUp" className="no-underline text-white font-bold">
-              ĐĂNG NHẬP
-            </Link>
+            {authState.isAuthenticated ? (
+              <p className="text-white font-bold">{authState.userName}</p>
+            ) : (
+              <Link to="/SignUp" className="no-underline text-white font-bold">
+                ĐĂNG NHẬP
+              </Link>
+            )}
           </li>
         </ul>
       </nav>
