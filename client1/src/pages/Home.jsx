@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
-
+import { DatePicker, Space } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 const Home = () => {
   const [airports, setAirports] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState("");
@@ -16,6 +18,12 @@ const Home = () => {
   const [infants, setInfants] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  dayjs.extend(customParseFormat);
+  const { RangePicker } = DatePicker;
+
+  const disabledDate = (current) => {
+    return current && current < dayjs().endOf('day');
+  };
   useEffect(() => {
     axios
       .get("http://localhost:4000/AirPort")
@@ -39,29 +47,30 @@ const Home = () => {
     setSelectedDestination(event.target.value);
   };
 
-  const handleDayStartChange = (event) => {
-    setDayStart(event.target.value);
+  const handleDateChange = (dates) => {
+    if (dates && dates.length === 2) {
+      setDayStart(dates[0].format("YYYY-MM-DD"));
+      setDayEnd(dates[1].format("YYYY-MM-DD"));
+    } else {
+      setDayStart(null);
+      setDayEnd(null);
+    }
   };
 
-  const handleDayEndChange = (event) => {
-    setDayEnd(event.target.value);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     axios
-      .get("http://localhost:4000/searchFlight", {
-        params: {
+      .post("http://localhost:4000/searchFlight", {
           selectedOrigin,
           selectedDestination,
           dayStart,
           dayEnd,
-        },
       })
       .then((response) => {
         console.log("Flight data fetched successfully:", response.data);
-        console.log(response.data)
+        console.log(response.data);
         navigate(`/BookFlight`, { state: { flights: response.data.data } });
       })
       .catch((error) => {
@@ -106,7 +115,7 @@ const Home = () => {
           đường và lịch trình của chúng tôi, đồng thời khám phá thêm về trải
           nghiệm bạn có thể mong đợi trên chuyến bay.
         </p>
-        <form id="booking-form">
+        <form id="booking-form "onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="origin">Sân bay khởi hành:</label>
@@ -120,7 +129,7 @@ const Home = () => {
                 </option>
                 {airports.map((a) => (
                   <option key={a.MaSB} value={a.MaSB}>
-                    {`${a.TenSB} - ${a.ThanhPho}`}
+                    {`${a.TenSB} `}
                   </option>
                 ))}
               </select>
@@ -137,34 +146,23 @@ const Home = () => {
                 </option>
                 {filteredAirports.map((a) => (
                   <option key={a.MaSB} value={a.MaSB}>
-                    {`${a.TenSB} - ${a.ThanhPho}`}
+                       {`${a.TenSB} `}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="departure">Khởi hành:</label>
-              <input
-                type="date"
-                id="departure"
-                value={dayStart}
-                onChange={handleDayStartChange}
+              <label htmlFor="departure">Khởi hành - Khứ hồi</label>
+              <RangePicker
+                disabledDate={disabledDate}
+                onChange={handleDateChange}
+                className="h-[41px]"
               />
             </div>
           </div>
 
-          
           <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="return">Khứ hồi:</label>
-              <input
-                type="date"
-                id="return"
-                value={dayEnd}
-                onChange={handleDayEndChange}
-              />
-            </div>
 
             <div className="form-group">
               <label htmlFor="passengers">Hành khách:</label>
@@ -305,9 +303,9 @@ const Home = () => {
             </div>
           </div>
           <div className="float-right">
-            <Link to="/BookFlight">
+          
               <button type="submit">Tìm kiếm chuyến bay</button>
-            </Link>
+        
           </div>
         </form>
         <p>Đăng nhập để tích lũy và sử dụng Dặm thưởng Skywards</p>

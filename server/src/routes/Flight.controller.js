@@ -1,7 +1,7 @@
 const { db1 } = require("../models/connect");
 
 const FlightData = async (req, res) => {
-  const { selectedOrigin, selectedDestination,dayStart,dayEnd } = req.query;
+  const { selectedOrigin, selectedDestination,dayStart,dayEnd } = req.body;
   try {
     const [rows] = await db1.query(
       `SELECT cb.MaChuyenBay, cb.MaHang, cb.MaMayBay, cb.MaTuyen, cb.NgayKhoiHanh, cb.NgayDen
@@ -9,8 +9,8 @@ const FlightData = async (req, res) => {
       INNER JOIN tuyenbay tb ON cb.MaTuyen = tb.MaTuyen
       INNER JOIN sanbay sbdi ON tb.MaSBDi = sbdi.MaSB
       INNER JOIN sanbay sbden ON tb.MaSBDen = sbden.MaSB
-      WHERE sbdi.TenSB = ?
-      AND sbden.TenSB = ?
+      WHERE sbdi.MaSB = ?
+      AND sbden.MaSB = ?
       AND cb.NgayKhoiHanh >= ?
       AND cb.NgayDen <= ?`,
       [selectedOrigin, selectedDestination, dayStart, dayEnd]
@@ -18,7 +18,7 @@ const FlightData = async (req, res) => {
     if (rows.length > 0) {
       res.status(200).json({ message: 'Flight data found', data: rows });
     } else {
-      res.status(404).json({ message: 'No flight route found for the given origin and destination' });
+      res.status(403).json({ message: 'No flight route found for the given origin and destination' });
     }
   } catch (error) {
     console.error('Error processing flight data:', error);
