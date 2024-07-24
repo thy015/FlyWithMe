@@ -4,14 +4,14 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authState, setAuthState] = useState({ isAuthenticated: false, userName: '' });
+  const [authState, setAuthState] = useState({ isAuthenticated: false, Ten: '' });
 
-  const login = (userName) => {
-    setAuthState({ isAuthenticated: true, userName });
+  const login = (Ten) => {
+    setAuthState({ isAuthenticated: true, Ten });
   };
 
   const logout = () => {
-    setAuthState({ isAuthenticated: false, userName: '' });
+    setAuthState({ isAuthenticated: false, Ten: '' });
   };
 
   return (

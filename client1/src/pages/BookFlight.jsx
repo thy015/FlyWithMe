@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Dropdown, Flex } from "antd";
+import  axios  from "axios";
 import { Link } from "react-router-dom";
 const BookFlight = () => {
   const flights = [
@@ -55,70 +55,79 @@ const BookFlight = () => {
     setShowInfo(newShowInfo);
   };
 
+  const handleChoose = async (flight) => {
+    try {
+      await axios.post("http://localhost:4000/BookFlight", flight);
+      console.log("Flight details sent successfully");
+    } catch (error) {
+      console.error("Error sending flight details:", error);
+    }
+  };
+
   return (
-    <div>
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
-          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-            Book Flight
-          </h1>
-          <div className="flex justify-between mb-6">
-            <div className="border-b-2 border-blue-500 pb-2">1 Flight</div>
-            <div className="pb-2">2 Passenger</div>
-            <div className="pb-2">3 Option</div>
-            <div className="pb-2">4 Payment</div>
-            <div className="pb-2">5 Confirm</div>
-          </div>
-          {flights.map((flight, index) => (
-            <div
-              key={flight.flightNumber}
-              className="flex justify-between items-center border p-4 rounded mb-4"
-              onClick={() => toggleInfo(index)}
-            >
-              <div className="flex items-center">
-                <img
-                  src={flight.logo}
-                  alt={`${flight.airline} Logo`}
-                  className="w-12 h-12 mr-4"
-                />
-                <div>
-                  <span className="font-bold text-lg">
-                    {flight.flightNumber}
-                  </span>
-                  <br />
-                  <span>{flight.airline}</span>
-                  {showInfo[index] && flight.additionalInfo && (
-                    <div className="mt-2 border-t pt-2">
-                      <p>Seat class: {flight.additionalInfo.seatClass}</p>
-                      <p>Hand-luggage: {flight.additionalInfo.handLuggage}</p>
-                      <p>
-                        Checked baggage: {flight.additionalInfo.checkedBaggage}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Book Flight
+        </h1>
+        <div className="flex justify-between mb-6">
+          <div className="border-b-2 border-blue-500 pb-2">1 Flight</div>
+          <div className="pb-2">2 Passenger</div>
+          <div className="pb-2">3 Option</div>
+          <div className="pb-2">4 Payment</div>
+          <div className="pb-2">5 Confirm</div>
+        </div>
+        {flights.map((flight, index) => (
+          <div
+            key={flight.flightNumber}
+            className="flex justify-between items-center border p-4 rounded mb-4"
+            onClick={() => toggleInfo(index)}
+          >
+            <div className="flex items-center">
+              <img
+                src={flight.logo}
+                alt={`${flight.airline} Logo`}
+                className="w-12 h-12 mr-4"
+              />
               <div>
-                <span className="text-lg">{flight.departureTime}</span>
+                <span className="font-bold text-lg">{flight.flightNumber}</span>
                 <br />
-                <span>{flight.departureCode}</span>
+                <span>{flight.airline}</span>
+                {showInfo[index] && flight.additionalInfo && (
+                  <div className="mt-2 border-t pt-2">
+                    <p>Seat class: {flight.additionalInfo.seatClass}</p>
+                    <p>Hand-luggage: {flight.additionalInfo.handLuggage}</p>
+                    <p>Checked baggage: {flight.additionalInfo.checkedBaggage}</p>
+                  </div>
+                )}
               </div>
-              <div>
-                <span className="text-lg">{flight.arrivalTime}</span>
-                <br />
-                <span>{flight.arrivalCode}</span>
-              </div>
-              <div>
-                <span className="text-lg text-green-600">{flight.price}</span>
-              </div>
-              <Link to='/BookFlight/Passengers'>
-              <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            </div>
+            <div>
+              <span className="text-lg">{flight.departureTime}</span>
+              <br />
+              <span>{flight.departureCode}</span>
+            </div>
+            <div>
+              <span className="text-lg">{flight.arrivalTime}</span>
+              <br />
+              <span>{flight.arrivalCode}</span>
+            </div>
+            <div>
+              <span className="text-lg text-green-600">{flight.price}</span>
+            </div>
+            <Link to='/BookFlight/Passengers'>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent toggling info
+                  handleChoose(flight);
+                }}
+              >
                 Choose
               </button>
-              </Link>
-            </div>
-          ))}
-        </div>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

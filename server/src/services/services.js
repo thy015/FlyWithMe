@@ -54,7 +54,18 @@ const signInCustomer = async (credentials) => {
         return { status: 'ERROR', message: 'Internal server error' };
     }
 };
-
+const createTicket=async(ticketInfo)=>{
+    return new Promise((resolve,reject)=>{
+        const { selectedOrigin, selectedDestination } = ticketInfo
+        try{
+            resolve({
+                
+            })
+        }catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     signUpCustomer,
     signInCustomer

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import {Button} from'antd'
 const Done = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -25,6 +25,11 @@ const Done = () => {
           Go to Homepage
         </button>
         </Link>
+        <button
+          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-blue-600 ml-7"
+        >
+          Watch your booked ticket
+        </button>
       </div>
     </div>
   );

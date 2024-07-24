@@ -14,10 +14,10 @@ const Control = () => {
           <h1 class="text-3xl font-semibold text-center mb-4">
             Quản lý đặt chỗ
           </h1>
-          <p class="text-center mb-6">
+          <h4 class="text-center mb-6">
             Nhập thông tin chi tiết của bạn để xem hành trình, thay đổi và đăng
             ký thêm dịch vụ.
-          </p>
+          </h4>
           <form class="reservation-form">
             <div class="mb-4">
               <input

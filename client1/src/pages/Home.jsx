@@ -295,7 +295,7 @@ const Home = () => {
           tác{" "}
         </p>
       </div>
-      <div className=" h-[650px]"></div>
+      <div className=" h-[450px]"></div>
 
       <div className="container bg-white shadow-lg absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-[90%]">
         <h3>Cách đặt vé máy bay với Emirates</h3>
