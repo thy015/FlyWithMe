@@ -16,7 +16,7 @@ app.use(cors({
 
 
 app.use('/',HomeRoute)
-app.use('/BookFlight',FlightRoute)
+app.use('/searchFlight',FlightRoute)
 app.use('/api', signUpRouter);
 app.use('/Airport',AirportRoute)
 

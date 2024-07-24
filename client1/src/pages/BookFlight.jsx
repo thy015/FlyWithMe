@@ -57,7 +57,7 @@ const BookFlight = () => {
 
   const handleChoose = async (flight) => {
     try {
-      await axios.post("http://localhost:4000/BookFlight", flight);
+      await axios.get("http://localhost:4000/searchFlight", flight);
       console.log("Flight details sent successfully");
     } catch (error) {
       console.error("Error sending flight details:", error);
@@ -70,64 +70,116 @@ const BookFlight = () => {
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Book Flight
         </h1>
-        <div className="flex justify-between mb-6">
-          <div className="border-b-2 border-blue-500 pb-2">1 Flight</div>
-          <div className="pb-2">2 Passenger</div>
-          <div className="pb-2">3 Option</div>
-          <div className="pb-2">4 Payment</div>
-          <div className="pb-2">5 Confirm</div>
+        <div className="flex mb-6">
+          <div className="border-b-2 border-blue-500 pb-2 mr-10"> Flight</div>
+          <div className="pb-2"> Confirm</div>
         </div>
-        {flights.map((flight, index) => (
+       
           <div
-            key={flight.flightNumber}
             className="flex justify-between items-center border p-4 rounded mb-4"
-            onClick={() => toggleInfo(index)}
           >
             <div className="flex items-center">
-              <img
-                src={flight.logo}
-                alt={`${flight.airline} Logo`}
-                className="w-12 h-12 mr-4"
-              />
-              <div>
-                <span className="font-bold text-lg">{flight.flightNumber}</span>
-                <br />
-                <span>{flight.airline}</span>
-                {showInfo[index] && flight.additionalInfo && (
-                  <div className="mt-2 border-t pt-2">
-                    <p>Seat class: {flight.additionalInfo.seatClass}</p>
-                    <p>Hand-luggage: {flight.additionalInfo.handLuggage}</p>
-                    <p>Checked baggage: {flight.additionalInfo.checkedBaggage}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div>
-              <span className="text-lg">{flight.departureTime}</span>
-              <br />
-              <span>{flight.departureCode}</span>
-            </div>
-            <div>
-              <span className="text-lg">{flight.arrivalTime}</span>
-              <br />
-              <span>{flight.arrivalCode}</span>
-            </div>
-            <div>
-              <span className="text-lg text-green-600">{flight.price}</span>
-            </div>
-            <Link to='/BookFlight/Passengers'>
-              <button
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent toggling info
-                  handleChoose(flight);
-                }}
-              >
-                Choose
-              </button>
-            </Link>
+            {flights.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Flight Number</th>
+              <th>Airline</th>
+              <th>Aircraft</th>
+              <th>Route</th>
+              <th>Departure Date</th>
+              <th>Arrival Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {flights.map((flight) => (
+              <tr key={flight.MaChuyenBay}>
+                <td>{flight.MaChuyenBay}</td>
+                <td>{flight.MaHang}</td>
+                <td>{flight.MaMayBay}</td>
+                <td>{flight.MaTuyen}</td>
+                <td>{new Date(flight.NgayKhoiHanh).toLocaleString()}</td>
+                <td>{new Date(flight.NgayDen).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No flights available for the selected route and dates.</p>
+      )}
+    </div>
+            <button
+          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 float-right"
+        >
+          Choose
+        </button>
           </div>
-        ))}
+          
+     
+ <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 mt-8">Passenger Information</h1>
+        
+          <div className="border p-4 rounded mb-4 flex gap-5">
+            <div className="mb-4">
+              <label className="block text-gray-700">Name</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Phone Number</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Age</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">CCCD</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-4 mt-8">
+          Payment Information
+        </h2>
+        <div className="border p-4 rounded mb-4">
+          <label className="block text-gray-700 mb-2">Cardholder Name</label>
+          <input type="text" className="w-full p-2 border rounded mb-4" />
+          <label className="block text-gray-700 mb-2">Card Number</label>
+          <input type="text" className="w-full p-2 border rounded mb-4" />
+          <div className="flex justify-between gap-4 mb-4">
+            <div className="w-1/2">
+              <label className="block text-gray-700 mb-2">
+                Expiration Date
+              </label>
+              <input
+                type="text"
+                placeholder="MM/YY"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-gray-700 mb-2">CVV</label>
+              <input type="text" className="w-full p-2 border rounded" />
+            </div>
+          </div>
+        </div>
+        <div className="text-right text-green-500 font-bold text-xl mb-6">
+          2.708.000 VND
+        </div>
+        <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 float-right">
+          Pay and continue
+        </button>
+       
       </div>
     </div>
   );

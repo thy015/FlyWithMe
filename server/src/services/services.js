@@ -48,6 +48,37 @@ const signInCustomer = async (credentials) => {
         return {
             status: 'OK',
             message: 'Sign-in successful',
+            QuyenSuDung:customer.QuyenSuDung
+        };
+    } catch (e) {
+        console.error('Error during sign-in:', e);
+        return { status: 'ERROR', message: 'Internal server error' };
+    }
+};
+const signInAdmin = async (credentials) => {
+    try {
+        const { email, passWord } = credentials;
+
+        // Fetch admin data
+        const getAdminQuery = 'SELECT * FROM taikhoan WHERE Email = ? AND QuyenSuDung = "Admin"';
+        const [results] = await db1.query(getAdminQuery, [email]);
+
+        if (results.length === 0) {
+            return { status: 'ERROR', message: 'Admin not found' };
+        }
+
+        const admin = results[0];
+        console.log('Fetched admin:', admin);
+        console.log('Password from DB:', admin.MatKhau);
+
+        if (passWord !== admin.MatKhau) {  
+            return { status: 'ERROR', message: 'Invalid password' };
+        }
+
+        return {
+            status: 'OK',
+            message: 'Sign-in successful',
+            QuyenSuDung: admin.QuyenSuDung
         };
     } catch (e) {
         console.error('Error during sign-in:', e);
@@ -56,7 +87,7 @@ const signInCustomer = async (credentials) => {
 };
 const createTicket=async(ticketInfo)=>{
     return new Promise((resolve,reject)=>{
-        const { selectedOrigin, selectedDestination } = ticketInfo
+        const { selectedOrigin, selectedDestination, name, phoneNum, age, CCCD} = ticketInfo
         try{
             resolve({
                 
@@ -68,5 +99,6 @@ const createTicket=async(ticketInfo)=>{
 }
 module.exports = {
     signUpCustomer,
-    signInCustomer
+    signInCustomer,
+    signInAdmin
 };

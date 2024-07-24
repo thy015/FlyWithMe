@@ -36,6 +36,24 @@ const signInCustomer = async (req, res) => {
         return res.status(500).json({ message: e });
     }
 };
+const signInAdmin= async (req, res) => {
+    try {
+        const { email, passWord } = req.body;
+
+        if (!email || !passWord) {
+            return res.status(403).json({ message: 'Input is required' });
+        }
+        const result = await services.signInAdmin(req.body);
+        if (result.status === 'OK') {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+    } catch (e) {
+        return res.status(500).json({ message: e });
+    }
+};
+
 function validateEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
@@ -43,5 +61,6 @@ function validateEmail(email) {
 
 module.exports={
     signUpCustomer,
-    signInCustomer
+    signInCustomer,
+    signInAdmin
 }

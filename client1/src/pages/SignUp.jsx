@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
+
 const SignUp = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    name: "",
-    phoneNum: "",
     email: "",
     passWord: "",
+    name: "",
+    phoneNum: "",
     rtpassword: ""
   });
-  const { login } = useAuth();
-  const [notification, setNotification] = useState(""); // State for notifications
+  const { login, isAdmin } = useAuth();
+  const [notification, setNotification] = useState("");
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -27,15 +29,17 @@ const SignUp = () => {
     try {
       const response = await axios.post(url, formData);
       setNotification(isLogin ? "Đăng nhập thành công!" : "Đăng ký thành công!");
-      console.log(response.data);
 
       if (isLogin) {
-        login(response.data.userName);
-        navigate("/");
+        login(response.data); // Assuming response.data is the user object
+        if (isAdmin()) {
+          navigate("/Admin");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       setNotification(isLogin ? "Đăng nhập thất bại. Vui lòng kiểm tra lại!" : "Đăng ký thất bại. Vui lòng kiểm tra lại!");
-      console.error(error);
     }
   };
 
@@ -48,23 +52,19 @@ const SignUp = () => {
         <h1 className="text-3xl mb-6 text-center">FlyWithMe</h1>
         <div className="flex justify-center mb-6">
           <button
-            className={`mx-2 px-4 py-2 rounded-full ${
-              isLogin ? "bg-blue-600" : "bg-transparent"
-            } text-white`}
+            className={`mx-2 px-4 py-2 rounded-full ${isLogin ? "bg-blue-600" : "bg-transparent"} text-white`}
             onClick={() => {
               setIsLogin(true);
-              setNotification(""); // Clear notification when switching
+              setNotification("");
             }}
           >
             Đăng nhập
           </button>
           <button
-            className={`mx-2 px-4 py-2 rounded-full ${
-              !isLogin ? "bg-blue-600" : "bg-transparent"
-            } text-white`}
+            className={`mx-2 px-4 py-2 rounded-full ${!isLogin ? "bg-blue-600" : "bg-transparent"} text-white`}
             onClick={() => {
               setIsLogin(false);
-              setNotification(""); // Clear notification when switching
+              setNotification("");
             }}
           >
             Đăng ký
@@ -176,6 +176,9 @@ const SignUp = () => {
             </button>
           </div>
         )}
+        <Link to='/signInAdmin'>
+        <div className="float-right mt-8 cursor-pointer">Admin</div>
+        </Link>
       </div>
     </div>
   );

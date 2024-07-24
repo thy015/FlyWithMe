@@ -1,6 +1,6 @@
 const express = require('express');
 const signUpRouter = express.Router();
-const { signUpCustomer, signInCustomer } = require('./signUp.controller'); 
+const { signUpCustomer, signInCustomer, signInAdmin } = require('./signUp.controller'); 
 const {db1}=require('../models/connect')
 
 // Sign-up route
@@ -17,5 +17,5 @@ signUpRouter.get('/signedUpCus', async (req, res) => {
 });
 // Sign-in route
 signUpRouter.post('/signin', signInCustomer);
-
+signUpRouter.post('/signInAdmin',signInAdmin)
 module.exports = signUpRouter;

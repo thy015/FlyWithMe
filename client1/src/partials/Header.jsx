@@ -41,7 +41,7 @@ const Header = ({ children }) => {
           </li>
           <li>
             {authState.isAuthenticated ? (
-              <p className="text-white font-bold">{authState.userName}</p>
+              <p className="text-white font-bold">{authState.user?.name}</p>
             ) : (
               <Link to="/SignUp" className="no-underline text-white font-bold">
                 ĐĂNG NHẬP

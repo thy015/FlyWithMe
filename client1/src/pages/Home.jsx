@@ -2,13 +2,15 @@ import React from "react";
 import "../index.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate,Link } from "react-router-dom";
-import {DownOutlined} from '@ant-design/icons'
+import { useNavigate, Link } from "react-router-dom";
+import { DownOutlined } from "@ant-design/icons";
 
 const Home = () => {
   const [airports, setAirports] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
+  const [dayStart, setDayStart] = useState("");
+  const [dayEnd, setDayEnd] = useState("");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
@@ -24,10 +26,10 @@ const Home = () => {
         console.error("There was an error fetching the airport data!", error);
       });
   }, []);
+
   const handleOriginChange = (event) => {
     const newOrigin = event.target.value;
     setSelectedOrigin(newOrigin);
-    // Clear destination if it matches the new origin
     if (selectedDestination === newOrigin) {
       setSelectedDestination("");
     }
@@ -37,24 +39,35 @@ const Home = () => {
     setSelectedDestination(event.target.value);
   };
 
+  const handleDayStartChange = (event) => {
+    setDayStart(event.target.value);
+  };
+
+  const handleDayEndChange = (event) => {
+    setDayEnd(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-
     axios
-      .post("http://localhost:4000/BookFlight")
+      .get("http://localhost:4000/searchFlight", {
+        params: {
+          selectedOrigin,
+          selectedDestination,
+          dayStart,
+          dayEnd,
+        },
+      })
       .then((response) => {
-        console.log("Flight data sent successfully:", response.data);
-        navigate(`/BookFlight`, { state: {
-          origin: selectedOrigin,
-          destination: selectedDestination,
-        } });
+        console.log("Flight data fetched successfully:", response.data);
+        console.log(response.data)
+        navigate(`/BookFlight`, { state: { flights: response.data.data } });
       })
       .catch((error) => {
-        console.error("There was an error sending the flight data!", error);
+        console.error("There was an error fetching the flight data!", error);
       });
   };
-
 
   // Filter out the selected origin airport for destination options
   const filteredAirports = airports.filter(
@@ -132,146 +145,154 @@ const Home = () => {
 
             <div className="form-group">
               <label htmlFor="departure">Khởi hành:</label>
-              <input type="date" id="departure" />
+              <input
+                type="date"
+                id="departure"
+                value={dayStart}
+                onChange={handleDayStartChange}
+              />
             </div>
           </div>
 
+          
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="return">Khứ hồi:</label>
-              <input type="date" id="return" />
+              <input
+                type="date"
+                id="return"
+                value={dayEnd}
+                onChange={handleDayEndChange}
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="passengers">Hành khách:</label>
               <div className="flex items-center" onClick={toggleDropdown}>
-                    <input
-                      type="text"
-                      name="roundtrip_passenger"
-                      readOnly
-                      value={totalPassengers}
-                      id="total_passengers"
-                      className="cursor-pointer"
-                    />
-                    <div className="right-[2%] absolute">
-                    <DownOutlined />
+                <input
+                  type="text"
+                  name="roundtrip_passenger"
+                  readOnly
+                  value={totalPassengers}
+                  id="total_passengers"
+                  className="cursor-pointer"
+                />
+                <div className="right-[2%] absolute">
+                  <DownOutlined />
+                </div>
+              </div>
+              {showDropdown && (
+                <ul
+                  className="passenger-selector bg-slate-200 text-center"
+                  id="roundtrip-passenger-selector"
+                >
+                  <li>
+                    <div className="psg-type">
+                      <p className="font-bold text-[13px]">Adults</p>
+                      <span className="font-bold text-[13px] text-[#003278]">
+                        Adults (from 12 years)
+                      </span>
                     </div>
-                  </div>
-                  {showDropdown && (
-                    <ul
-                      className="passenger-selector bg-slate-200 text-center"
-                      id="roundtrip-passenger-selector"
+                    <div
+                      className="psg-selector"
+                      id="selector_for_passenger_adult"
                     >
-                      <li>
-                        <div className="psg-type">
-                          <p className="font-bold text-[13px]">Adults</p>
-                          <span className="font-bold text-[13px] text-[#003278]">
-                            Adults (from 12 years)
-                          </span>
-                        </div>
-                        <div
-                          className="psg-selector"
-                          id="selector_for_passenger_adult"
-                        >
-                          <button
-                            className="psg-btn psg-decrease"
-                            onClick={() => {
-                              decrease(setAdults, adults);
-                              if (adults - 1 < infants) {
-                                setInfants(adults - 1); // Điều chỉnh số lượng trẻ sơ sinh nếu nhiều hơn số lượng người lớn
-                              }
-                            }}
-                            disabled={adults <= 1}
-                          >
-                            -
-                          </button>
-                          <span
-                            className="current-psg"
-                            id="current_passenger_adult"
-                          >
-                            {adults}
-                          </span>
-                          <button
-                            className="psg-btn psg-increase"
-                            onClick={() => increase(setAdults, adults)}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="psg-type">
-                          <p className="font-bold text-[13px]">Children</p>
-                          <span className="font-bold text-[13px] text-[#003278] hover:underline">
-                            <a href="#0" className="vna-ajax-modal">
-                              Children (2-12 years)
-                            </a>
-                          </span>
-                        </div>
-                        <div
-                          className="psg-selector"
-                          id="selector_for_passenger_child"
-                        >
-                          <button
-                            className="psg-btn psg-decrease"
-                            onClick={() => decrease(setChildren, children)}
-                            disabled={children <= 0}
-                          >
-                            -
-                          </button>
-                          <span
-                            className="current-psg"
-                            id="current_passenger_child"
-                          >
-                            {children}
-                          </span>
-                          <button
-                            className="psg-btn psg-increase"
-                            onClick={() => increase(setChildren, children)}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="psg-type">
-                          <p className="font-bold text-[13px]">Infant</p>
-                          <span className="font-bold text-[13px] text-[#003278] hover:underline">
-                            <a href="#0" className="vna-ajax-modal">
-                              Infant (under 2 years)
-                            </a>
-                          </span>
-                        </div>
-                        <div
-                          className="psg-selector"
-                          id="selector_for_passenger_infant"
-                        >
-                          <button
-                            className="psg-btn psg-decrease"
-                            onClick={() => decrease(setInfants, infants)}
-                            disabled={infants <= 0}
-                          >
-                            -
-                          </button>
-                          <span
-                            className="current-psg"
-                            id="current_passenger_infant"
-                          >
-                            {infants}
-                          </span>
-                          <button
-                            className="psg-btn psg-increase"
-                            onClick={() =>
-                              increase(setInfants, infants, adults)
-                            }
-                          >
-                            +
-                          </button>
-                        </div>
-                      </li>
-                    </ul>
-                  )}
-  
+                      <button
+                        className="psg-btn psg-decrease"
+                        onClick={() => {
+                          decrease(setAdults, adults);
+                          if (adults - 1 < infants) {
+                            setInfants(adults - 1); // Điều chỉnh số lượng trẻ sơ sinh nếu nhiều hơn số lượng người lớn
+                          }
+                        }}
+                        disabled={adults <= 1}
+                      >
+                        -
+                      </button>
+                      <span
+                        className="current-psg"
+                        id="current_passenger_adult"
+                      >
+                        {adults}
+                      </span>
+                      <button
+                        className="psg-btn psg-increase"
+                        onClick={() => increase(setAdults, adults)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="psg-type">
+                      <p className="font-bold text-[13px]">Children</p>
+                      <span className="font-bold text-[13px] text-[#003278] hover:underline">
+                        <a href="#0" className="vna-ajax-modal">
+                          Children (2-12 years)
+                        </a>
+                      </span>
+                    </div>
+                    <div
+                      className="psg-selector"
+                      id="selector_for_passenger_child"
+                    >
+                      <button
+                        className="psg-btn psg-decrease"
+                        onClick={() => decrease(setChildren, children)}
+                        disabled={children <= 0}
+                      >
+                        -
+                      </button>
+                      <span
+                        className="current-psg"
+                        id="current_passenger_child"
+                      >
+                        {children}
+                      </span>
+                      <button
+                        className="psg-btn psg-increase"
+                        onClick={() => increase(setChildren, children)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="psg-type">
+                      <p className="font-bold text-[13px]">Infant</p>
+                      <span className="font-bold text-[13px] text-[#003278] hover:underline">
+                        <a href="#0" className="vna-ajax-modal">
+                          Infant (under 2 years)
+                        </a>
+                      </span>
+                    </div>
+                    <div
+                      className="psg-selector"
+                      id="selector_for_passenger_infant"
+                    >
+                      <button
+                        className="psg-btn psg-decrease"
+                        onClick={() => decrease(setInfants, infants)}
+                        disabled={infants <= 0}
+                      >
+                        -
+                      </button>
+                      <span
+                        className="current-psg"
+                        id="current_passenger_infant"
+                      >
+                        {infants}
+                      </span>
+                      <button
+                        className="psg-btn psg-increase"
+                        onClick={() => increase(setInfants, infants, adults)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              )}
             </div>
 
             <div className="form-group">
@@ -284,8 +305,8 @@ const Home = () => {
             </div>
           </div>
           <div className="float-right">
-            <Link to='/BookFlight'>
-            <button type="submit">Tìm kiếm chuyến bay</button>
+            <Link to="/BookFlight">
+              <button type="submit">Tìm kiếm chuyến bay</button>
             </Link>
           </div>
         </form>
