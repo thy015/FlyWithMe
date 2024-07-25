@@ -1,13 +1,17 @@
 import React from "react";
 import { useState } from "react";
-import  axios  from "axios";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 const BookFlight = () => {
   const location = useLocation();
   const flights = location.state?.flights || []; // Retrieve flights from location state
 
   const [showInfo, setShowInfo] = useState(Array(flights.length).fill(false));
+  const [chosenFlight, setChosenFlight] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const toggleInfo = (index) => {
     const newShowInfo = [...showInfo];
@@ -17,13 +21,56 @@ const BookFlight = () => {
 
   const handleChoose = async (flight) => {
     try {
-      await axios.post("http://localhost:4000/searchFlight", flight);
-      console.log("Flight details sent successfully");
+      await axios.post(
+        "http://localhost:4000/searchFlight/flightChose",
+        flight
+      );
+      console.log("Sent MaChuyenBay successfully");
+      setChosenFlight(flight.MaChuyenBay);
+      setSuccessMessage("Chọn vé thành công!");
     } catch (error) {
       console.error("Error sending flight details:", error);
     }
   };
 
+  const disabledDate = (current) => {
+    return current && current < dayjs().endOf("day");
+  };
+  const [passengerInfo, setPassengerInfo] = useState({
+    name: "",
+    phoneNum: "",
+    age: "",
+    CCCD: "",
+    nameCardHolder: "",
+    cardNum: "",
+    expirationDay: "",
+    CVV: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setPassengerInfo({ ...passengerInfo, [name]: value });
+  };
+  const handleDateChange = (date, dateString) => {
+    setPassengerInfo({ ...passengerInfo, expirationDay: dateString });
+  };
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/searchFlight/passengerChose",
+        passengerInfo
+      );
+      if (response.status === 201) {
+        alert("Passenger and payment data inserted successfully");
+        navigate("/Done");
+      }
+    } catch (error) {
+      alert("Error inserting data: " + error.response.data.message);
+    }
+  };
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
@@ -36,34 +83,47 @@ const BookFlight = () => {
         </div>
 
         <div className="flex justify-between items-center border p-4 rounded mb-4">
-          <div className="flex items-center">
+          <div className="flex items-center text-center">
             {flights.length > 0 ? (
               <table>
-                <thead >
+                <thead>
                   <tr>
-                    <th>Flight Number</th>
-                    <th>Airline</th>
-                    <th>Aircraft</th>
-                    <th>Route</th>
-                    <th>Departure Date</th>
-                    <th>Arrival Date</th>
+                    <th>Mã chuyến bay</th>
+                    <th>Hãng bay</th>
+                    <th>Máy bay</th>
+                    <th>Từ - Đến</th>
+                    <th>Ngày khởi hành</th>
+                    <th>Ngày đến</th>
+                    <th>Giá</th>
+                    <th>Loại vé</th>
                   </tr>
                 </thead>
                 <tbody>
                   {flights.map((flight, index) => (
                     <tr key={flight.MaChuyenBay}>
                       <td>{flight.MaChuyenBay}</td>
-                      <td>{flight.MaHang}</td>
-                      <td>{flight.MaMayBay}</td>
-                      <td>{flight.MaTuyen}</td>
+                      <td>{flight.TenHang}</td>
+                      <td>{flight.TenMayBay}</td>
+                      <td>
+                        {flight.ThanhPhoDi} - {flight.ThanhPhoDen}
+                      </td>
                       <td>{new Date(flight.NgayKhoiHanh).toLocaleString()}</td>
                       <td>{new Date(flight.NgayDen).toLocaleString()}</td>
+                      <td>{flight.GiaVe} vnd</td>
+                      <td>{flight.LoaiVe}</td>
                       <td>
                         <button
                           onClick={() => handleChoose(flight)}
-                          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                          className={`py-2 px-4 rounded ${
+                            chosenFlight === flight.MaChuyenBay
+                              ? "bg-gray-500 cursor-not-allowed"
+                              : "bg-green-500 text-white hover:bg-green-600"
+                          }`}
+                          disabled={chosenFlight === flight.MaChuyenBay}
                         >
-                          Choose
+                          {chosenFlight === flight.MaChuyenBay
+                            ? "Chosen"
+                            : "Choose"}
                         </button>
                       </td>
                     </tr>
@@ -74,16 +134,26 @@ const BookFlight = () => {
               <p>No flights available for the selected route and dates.</p>
             )}
           </div>
+        </div>
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4">
+            {successMessage}
           </div>
-          
-     
- <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 mt-8">Passenger Information</h1>
-        
+        )}
+
+        <form onSubmit={handleFormSubmit}>
+          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 mt-8">
+            Passenger Information
+          </h1>
+
           <div className="border p-4 rounded mb-4 flex gap-5">
             <div className="mb-4">
               <label className="block text-gray-700">Name</label>
               <input
                 type="text"
+                name="name"
+                value={passengerInfo.name}
+                onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -91,6 +161,9 @@ const BookFlight = () => {
               <label className="block text-gray-700">Phone Number</label>
               <input
                 type="text"
+                name="phoneNum"
+                value={passengerInfo.phoneNum}
+                onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -98,6 +171,9 @@ const BookFlight = () => {
               <label className="block text-gray-700">Age</label>
               <input
                 type="text"
+                name="age"
+                value={passengerInfo.age}
+                onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -105,42 +181,75 @@ const BookFlight = () => {
               <label className="block text-gray-700">CCCD</label>
               <input
                 type="text"
+                name="CCCD"
+                value={passengerInfo.CCCD}
+                onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
             </div>
           </div>
           <h2 className="text-xl font-bold text-gray-800 mb-4 mt-8">
-          Payment Information
-        </h2>
-        <div className="border p-4 rounded mb-4">
-          <label className="block text-gray-700 mb-2">Cardholder Name</label>
-          <input type="text" className="w-full p-2 border rounded mb-4" />
-          <label className="block text-gray-700 mb-2">Card Number</label>
-          <input type="text" className="w-full p-2 border rounded mb-4" />
-          <div className="flex justify-between gap-4 mb-4">
-            <div className="w-1/2">
-              <label className="block text-gray-700 mb-2">
-                Expiration Date
-              </label>
-              <input
-                type="text"
-                placeholder="MM/YY"
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="block text-gray-700 mb-2">CVV</label>
-              <input type="text" className="w-full p-2 border rounded" />
+            Payment Information
+          </h2>
+          <div className="border p-4 rounded mb-4">
+            <label className="block text-gray-700 mb-2">Cardholder Name</label>
+            <input
+              type="text"
+              name="nameCardHolder"
+              value={passengerInfo.nameCardHolder}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded mb-4"
+            />
+            <label className="block text-gray-700 mb-2">Card Number</label>
+            <input
+              type="text"
+              name="cardNum"
+              value={passengerInfo.cardNum}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded mb-4"
+            />
+            <div className="flex justify-between gap-4 mb-4">
+              <div className="w-1/2">
+                <label className="block text-gray-700 mb-2">
+                  Expiration Date
+                </label>
+                <DatePicker
+                  picker="month"
+                  disabledDate={disabledDate}
+                  className="expirationDay h-[46px] w-[391px]"
+                  onChange={handleDateChange}
+                  format="YYYY-MM"
+                  placeholder="MM/YY"
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="block text-gray-700 mb-2">CVV</label>
+                <input
+                  type="text"
+                  name="CVV"
+                  value={passengerInfo.CVV}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="text-right text-green-500 font-bold text-xl mb-6">
-          2.708.000 VND
-        </div>
-        <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 float-right">
-          Pay and continue
-        </button>
-       
+          {flights.length > 0 ? (
+            flights.map((flight, index) => {
+              <div className="text-right text-green-500 font-bold text-xl mb-6">
+                <td>{flight.GiaVe} VND </td>
+              </div>;
+            })
+          ) : (
+            <p>No flights available for the selected route and dates.</p>
+          )}
+          <button
+            type="submit"
+            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 float-right"
+          >
+            Pay and continue
+          </button>
+        </form>
       </div>
     </div>
   );

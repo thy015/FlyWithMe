@@ -23,7 +23,7 @@ export const routers=[
         isShowFooter:true
     },
     {
-        path:'/BookFlight/Passengers/Options/Payment/Done',
+        path:'/Done',
         page:Done,
         isShowHeader:true,
         isShowFooter:true

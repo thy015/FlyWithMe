@@ -75,6 +75,7 @@ const Home = () => {
       })
       .catch((error) => {
         console.error("There was an error fetching the flight data!", error);
+        alert(`There's no flight data `)
       });
   };
 

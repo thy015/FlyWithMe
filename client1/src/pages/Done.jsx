@@ -6,12 +6,9 @@ const Done = () => {
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full text-center">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Book Flight</h1>
-        <div className="flex justify-between mb-6">
-          <div className="pb-2">1 Flight</div>
-          <div className="pb-2">2 Passenger</div>
-          <div className="pb-2">3 Option</div>
-          <div className="pb-2">4 Payment</div>
-          <div className="border-b-2 border-blue-500 pb-2">5 Confirm</div>
+        <div className="flex mb-6">
+          <div className="pb-2 mr-10">Flight</div>
+          <div className="border-b-2 border-blue-500 pb-2">Confirm</div>
         </div>
         <h2 className="text-xl font-bold text-gray-800 mb-4">Thank you for booking your flight with FlyWithMe! We are delighted to have you on board and appreciate your trust in us for your travel needs
         !</h2>
