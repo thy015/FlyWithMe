@@ -38,17 +38,18 @@ const signInCustomer = async (credentials) => {
         const customer = results[0];
         console.log('Fetched customer:', customer);
         console.log('Password from DB:', customer.MatKhau);
-
-        
         if (passWord !== customer.MatKhau) {
             return { status: 'ERROR', message: 'Invalid password' };
         }
-
-
+        const access_token = await generalAccessTokens({
+            id: customer.MaTK,
+            QuyenSuDung: customer.QuyenSuDung
+        });
         return {
             status: 'OK',
             message: 'Sign-in successful',
-            QuyenSuDung:customer.QuyenSuDung
+            QuyenSuDung:customer.QuyenSuDung,
+            access_token: access_token
         };
     } catch (e) {
         console.error('Error during sign-in:', e);

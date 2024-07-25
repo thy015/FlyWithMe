@@ -29,13 +29,13 @@ const authenToken = (req, res, next) => {
 
     if (!token) return res.status(401).json({ message: 'missing token' });
 
-    jwt.verify(token, process.env.ACCESS_TOKEN, (error, owner) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN, (error, user) => {
         if (error) {
             console.error("Token verification failed:", error);
             return res.sendStatus(403);
         }
-        console.log("Token owner:", owner);
-        req.ownerID = owner.payload.id; 
+        console.log("Token owner:", user);
+        req.MaKH = user.id;
         next();
     });
 }

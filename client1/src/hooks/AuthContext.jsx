@@ -4,13 +4,18 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(localStorage.getItem('access_token') || null);
 
-    const login = (user) => {
+    const login = (user, token) => {
         setUser(user);
+        setToken(token);
+        localStorage.setItem('access_token', token);
     };
 
     const logout = () => {
         setUser(null);
+        setToken(null);
+        localStorage.removeItem('access_token');
     };
 
     const isAdmin = () => {
@@ -20,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     const authState = {
         isAuthenticated: !!user,
         user,
+        token
     };
 
     return (

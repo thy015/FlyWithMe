@@ -4,7 +4,7 @@ const FlightData = async (req, res) => {
   const { selectedOrigin, selectedDestination,dayStart,dayEnd } = req.body;
   try {
     const [rows] = await db1.query(
-      `SELECT cb.MaChuyenBay, hh.TenHang, mb.TenMayBay, sbdi.ThanhPho AS ThanhPhoDi, sbden.ThanhPho AS ThanhPhoDen, cb.NgayKhoiHanh, cb.NgayDen, v.GiaVe, v.LoaiVe
+      `SELECT cb.MaChuyenBay, hh.TenHang, mb.TenMayBay, sbdi.ThanhPho AS ThanhPhoDi, sbden.ThanhPho AS ThanhPhoDen, cb.NgayKhoiHanh, cb.NgayDen, v.GiaVe, v.LoaiVe,v.MaVe
       FROM chuyenbay cb
       INNER JOIN tuyenbay tb ON cb.MaTuyen = tb.MaTuyen
       INNER JOIN sanbay sbdi ON tb.MaSBDi = sbdi.MaSB
@@ -47,7 +47,7 @@ const passengerData=async(req,res)=>{
   } else if(age<=18){
     return res.status(403).json({message:'Age must be greater than 18'})
   } 
-    const [result] = await db1.query(
+  const [result] = await db1.query(
     'INSERT INTO khachhang (name, phoneNum, age, CCCD) VALUES (?, ?, ?, ?)',
     [name, phoneNum, age, CCCD]
   );
@@ -59,9 +59,11 @@ const passengerData=async(req,res)=>{
     [MaKH, nameCardHolder, cardNum, expirationDay, CVV]
   );
 
+
   res.status(201).json({ message: 'Passenger and payment data inserted successfully' });
   }catch(e){
    console.error('Error retrieving ticket data:', e);
+   res.status(404).json({ message: 'An error occurred while inserting passenger data', e: e.message });
   }
 }
 module.exports = {

@@ -1,7 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {Button} from'antd'
+import { useNavigate, useLocation } from "react-router-dom";
 const Done = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { passengerInfo, chosenFlight, totalPrice } = location.state || {};
+
+  const handleViewDetails = () => {
+    console.log({ passengerInfo, chosenFlight, totalPrice });
+    navigate("/BookingDetails", { state: { passengerInfo, flight: chosenFlight, totalPrice } });
+  };
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full text-center">
@@ -23,6 +31,7 @@ const Done = () => {
         </button>
         </Link>
         <button
+          onClick={handleViewDetails}
           className="bg-green-500 text-white py-2 px-4 rounded hover:bg-blue-600 ml-7"
         >
           Watch your booked ticket

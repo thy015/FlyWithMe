@@ -12,6 +12,7 @@ const BookFlight = () => {
   const [showInfo, setShowInfo] = useState(Array(flights.length).fill(false));
   const [chosenFlight, setChosenFlight] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const toggleInfo = (index) => {
     const newShowInfo = [...showInfo];
@@ -28,6 +29,7 @@ const BookFlight = () => {
       console.log("Sent MaChuyenBay successfully");
       setChosenFlight(flight.MaChuyenBay);
       setSuccessMessage("Chọn vé thành công!");
+      setTotalPrice(flight.GiaVe);
     } catch (error) {
       console.error("Error sending flight details:", error);
     }
@@ -58,19 +60,31 @@ const BookFlight = () => {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('access_token');
+    
+    if (!token) {
+        alert("You need to be logged in to complete the payment.");
+        return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:4000/searchFlight/passengerChose",
-        passengerInfo
+        { ...passengerInfo }, 
+        {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      }
       );
       if (response.status === 201) {
         alert("Passenger and payment data inserted successfully");
-        navigate("/Done");
+        navigate("/Done",{ state: { passengerInfo, chosenFlight, totalPrice } });
       }
     } catch (error) {
       alert("Error inserting data: " + error.response.data.message);
     }
   };
+
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
@@ -100,7 +114,7 @@ const BookFlight = () => {
                 </thead>
                 <tbody>
                   {flights.map((flight, index) => (
-                    <tr key={flight.MaChuyenBay}>
+                    <tr key={flight.MaChuyenBay} className="">
                       <td>{flight.MaChuyenBay}</td>
                       <td>{flight.TenHang}</td>
                       <td>{flight.TenMayBay}</td>
@@ -214,12 +228,10 @@ const BookFlight = () => {
                   Expiration Date
                 </label>
                 <DatePicker
-                  picker="month"
+                  picker="day"
                   disabledDate={disabledDate}
                   className="expirationDay h-[46px] w-[391px]"
                   onChange={handleDateChange}
-                  format="YYYY-MM"
-                  placeholder="MM/YY"
                 />
               </div>
               <div className="w-1/2">
@@ -234,14 +246,10 @@ const BookFlight = () => {
               </div>
             </div>
           </div>
-          {flights.length > 0 ? (
-            flights.map((flight, index) => {
-              <div className="text-right text-green-500 font-bold text-xl mb-6">
-                <td>{flight.GiaVe} VND </td>
-              </div>;
-            })
-          ) : (
-            <p>No flights available for the selected route and dates.</p>
+          {chosenFlight && (
+            <div className="text-right text-green-500 font-bold text-xl mb-6">
+              Total Price: {totalPrice} VND
+            </div>
           )}
           <button
             type="submit"

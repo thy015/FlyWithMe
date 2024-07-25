@@ -9,6 +9,7 @@ import Help from '../pages/Help';
 import Done from '../pages/Done';
 import Admin from '../pages/Admin';
 import signInAdmin from '../pages/SignInAdmin';
+import BookingDetails from '../pages/BookingDetails';
 export const routers=[
     {
         path:'/',
@@ -25,6 +26,12 @@ export const routers=[
     {
         path:'/Done',
         page:Done,
+        isShowHeader:true,
+        isShowFooter:true
+    },
+    {
+        path:'/BookingDetails',
+        page:BookingDetails,
         isShowHeader:true,
         isShowFooter:true
     },

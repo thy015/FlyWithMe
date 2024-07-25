@@ -4,6 +4,7 @@ import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 
 const SignUp = () => {
+  
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -31,12 +32,15 @@ const SignUp = () => {
       setNotification(isLogin ? "Đăng nhập thành công!" : "Đăng ký thành công!");
 
       if (isLogin) {
-        login(response.data); // Assuming response.data is the user object
+        const { access_token, QuyenSuDung } = response.data;
+        login({ ...response.data, QuyenSuDung }, access_token);
         if (isAdmin()) {
           navigate("/Admin");
         } else {
           navigate("/");
         }
+      } else {
+        setIsLogin(true);
       }
     } catch (error) {
       setNotification(isLogin ? "Đăng nhập thất bại. Vui lòng kiểm tra lại!" : "Đăng ký thất bại. Vui lòng kiểm tra lại!");

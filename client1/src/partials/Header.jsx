@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 const Header = ({ children }) => {
   const { authState } = useAuth(); 
+  
   return (
     <div>
       <nav class="bg-gray-800 flex justify-between items-center p-4">
