@@ -341,13 +341,19 @@ const Admin = () => {
 
   const handleDeleteTicket = async (MaVe) => {
     try {
-      await axios.delete(`http://localhost:4000/Admin/deleteTicket/${MaVe}`);
-      setTickets(tickets.filter((ticket) => ticket.MaVe !== MaVe));
-      form.resetFields();
-      notification.success({ message: "Ticket deleted successfully" });
+      const response = await axios.delete(`http://localhost:4000/Admin/deleteTicket/${MaVe}`);
+      console.log('Delete response:', response);
+  
+      if (response.status === 200) {
+        setTickets(tickets.filter((ticket) => ticket.MaVe !== MaVe));
+        form.resetFields();
+        notification.success({ message: "Ticket deleted successfully" });
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
     } catch (error) {
       console.error("Error deleting ticket:", error);
-      notification.error({ message: "Failed to delete ticket" });
+      notification.error({ message: "Failed to delete ticket", description: error.message });
     }
   };
 
@@ -800,70 +806,35 @@ const ticketColumns = [
 
 
     <Modal
-      title={editingTicket ? 'Edit Ticket' : 'Add Ticket'}
-      visible={isModalVisible}
-      onCancel={() => {
-        setIsModalVisible(false);
-        form.resetFields(); 
-      }}
-      onOk={() => form.submit()}
-    >
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleTicketSubmit}
+        visible={isModalVisible}
+        title={editingTicket ? 'Edit Ticket' : 'Add Ticket'}
+        onCancel={() => setIsModalVisible(false)}
+        onOk={form.submit}
       >
-        <Form.Item
-          name="MaVe"
-          label="Ticket Code"
-          rules={[{ required: true, message: 'Please input the ticket code!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="LoaiVe"
-          label="Ticket Type"
-          rules={[{ required: true, message: 'Please input the ticket type!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="HangVe"
-          label="Class"
-          rules={[{ required: true, message: 'Please input the class!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="GiaVe"
-          label="Price"
-          rules={[{ required: true, message: 'Please input the price!' }]}
-        >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item
-          name="SoVe"
-          label="Number of Tickets"
-          rules={[{ required: true, message: 'Please input the number of tickets!' }]}
-        >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item
-          name="TinhTrangVe"
-          label="Status"
-          rules={[{ required: true, message: 'Please input the status!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="MaChuyenBay"
-          label="Flight Code"
-          rules={[{ required: true, message: 'Please select the flight code!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </Modal>
+        <Form form={form} onFinish={handleTicketSubmit}>
+          <Form.Item name="MaVe" label="Ticket Code">
+            <Input disabled={!!editingTicket} />
+          </Form.Item>
+          <Form.Item name="LoaiVe" label="Ticket Type" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="HangVe" label="Class" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="GiaVe" label="Price" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="SoVe" label="Quantity" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="TinhTrangVe" label="Status" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="MaChuyenBay" label="Flight Code" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
 
     </div>
   );

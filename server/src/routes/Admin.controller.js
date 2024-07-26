@@ -202,22 +202,26 @@ addTicket = async (req, res) => {
 };
 
 deleteTicket = async (req, res) => {
-    const { MaVe } = req.params;
-
-    if (!MaVe) {
-        return res.status(400).json({ message: 'Ticket ID is required' });
-    }
-
-    try {
-        const result = await db1.query('DELETE FROM ve WHERE MaVe = ?', [MaVe]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Ticket not found' });
-        }
-        res.status(200).json({ message: 'Ticket deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting ticket', error });
-    }
+  const { MaVe } = req.params;
+  if (!MaVe) {
+      return res.status(403).json({ message: 'Ticket ID is required' });
+  }
+  try {
+      console.log(`Deleting ticket with MaVe: ${MaVe}`);
+      const [result] = await db1.query('DELETE FROM ve WHERE MaVe = ?', [MaVe]);
+      console.log('Query result:', result);
+      
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Ticket not found' });
+      }
+      
+      res.status(200).json({ message: 'Ticket deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting ticket:', error);
+      res.status(500).json({ message: 'Error deleting ticket', error });
+  }
 };
+
 
 updateTicket = async (req, res) => {
     const { MaVe } = req.params;

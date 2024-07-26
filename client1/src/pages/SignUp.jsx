@@ -181,7 +181,7 @@ const SignUp = () => {
           </div>
         )}
         <Link to='/signInAdmin'>
-        <div className="float-right mt-8 cursor-pointer">Admin</div>
+        <div className="float-right mt-8 cursor-pointer text-[#003278]">Admin</div>
         </Link>
       </div>
     </div>

@@ -123,7 +123,7 @@ const SignInAdmin = () => {
                     </div>
                 )}
                 <Link to='/SignUp'>      
-                <div className="float-right mt-8 cursor-pointer">User</div>
+                <div className="float-right mt-8 cursor-pointer text-[#003278]">User</div>
             </Link>
                  </div>
         </div>
