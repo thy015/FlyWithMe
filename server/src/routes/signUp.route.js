@@ -7,7 +7,7 @@ const {db1}=require('../models/connect')
 signUpRouter.post('/signup', signUpCustomer);
 signUpRouter.get('/signedUpCus', async (req, res) => {
     try {
-        const query = 'SELECT * FROM taikhoan';
+        const query = `SELECT * FROM taikhoan where QuyenSuDung='User'`;
         const [rows] = await db1.query(query);
         res.status(200).json(rows);
     } catch (e) {

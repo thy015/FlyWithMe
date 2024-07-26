@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
-
+import { Form, Input, Button, notification } from 'antd';
 const SignUp = () => {
-  
+  const [form] = Form.useForm();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -100,7 +100,7 @@ const SignUp = () => {
               <label htmlFor="passWord" className="block text-left mb-2">
                 Nhập mật khẩu
               </label>
-              <input
+              <Input.Password
                 type="text"
                 id="passWord"
                 value={formData.passWord}
@@ -162,7 +162,7 @@ const SignUp = () => {
               <label htmlFor="passWord" className="block text-left mb-2">
                 Nhập mật khẩu
               </label>
-              <input
+              <Input.Password
                 type="text"
                 id="passWord"
                 value={formData.passWord}
