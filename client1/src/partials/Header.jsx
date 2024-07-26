@@ -35,6 +35,11 @@ const Header = ({ children }) => {
             <p class="text-white font-bold">TRỢ GIÚP</p>
             </Link>
           </li>
+          <li>
+          <Link to="/BookingDetails" className="no-underline">
+            <p class="text-white font-bold">VÉ ĐÃ ĐẶT</p>
+            </Link>
+          </li>
         </ul>
         <ul class="flex space-x-5">
           <li>
@@ -49,6 +54,7 @@ const Header = ({ children }) => {
               </Link>
             )}
           </li>
+       
         </ul>
       </nav>
       {children}

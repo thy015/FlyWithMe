@@ -1,6 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const Control = () => {
+  const [name, setName] = useState("");
+  const [reservationCode, setReservationCode] = useState("");
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:4000/searchFlight/queryTickets", {
+        name,
+        MaVe: reservationCode
+      });
+      
+      setResult(response.data.data);
+      setError("");
+    } catch (err) {
+      setError(err.response ? err.response.data.message : 'An error occurred');
+      setResult(null);
+    }
+  };
   return (
     <div>
       <div className="relative">
@@ -12,38 +34,63 @@ const Control = () => {
       <div class="absolute z-10 flex flex-col py-12 left-1/2  transform -translate-x-1/2 -translate-y-1/2 top-[40%]">
         <div class="max-w-md bg-white shadow-md p-6 rounded-lg">
           <h1 class="text-3xl font-semibold text-center mb-4">
-            Quản lý đặt chỗ
+            Quản lý đặt vé
           </h1>
           <h4 class="text-center mb-6">
             Nhập thông tin chi tiết của bạn để xem hành trình, thay đổi và đăng
             ký thêm dịch vụ.
           </h4>
-          <form class="reservation-form">
+          <form class="reservation-form" onSubmit={handleSubmit}>
             <div class="mb-4">
-              <input
+            <input
                 type="text"
-                id="lastName"
-                placeholder="Họ"
-                class="w-full px-4 py-2 border rounded-md text-lg"
+                id="name"
+                placeholder="Tên"
+                className="w-full px-4 py-2 border rounded-md text-lg"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div class="mb-4">
-              <input
+            <input
                 type="text"
                 id="reservationCode"
-                placeholder="Mã đặt chỗ"
-                class="w-full px-4 py-2 border rounded-md text-lg"
+                placeholder="Mã đặt vé"
+                className="w-full px-4 py-2 border rounded-md text-lg"
+                value={reservationCode}
+                onChange={(e) => setReservationCode(e.target.value)}
               />
             </div>
             <button
               type="submit"
               class="w-full px-6 py-2 bg-blue-600 text-white rounded-md text-lg hover:bg-blue-700"
             >
-              Truy xuất Đặt chỗ
+              Truy xuất Đặt vé
             </button>
           </form>
         </div>
       </div>
+          {result && (
+            <div className="mt-4 bg-green-100 p-4 rounded-md">
+              <h2 className="text-xl font-semibold">Thông tin đặt vé:</h2>
+              <ul className="list-disc pl-5 mt-2">
+                {result.map((item, index) => (
+                  <li key={index}>
+                    <strong>Chuyến bay:</strong> Mã chuyến: {item.MaChuyenBay} - Từ: {item.NgayKhoiHanh} Đến: {item.NgayDen}<br />
+                    <strong>Thành phố đi:</strong> {item.ThanhPhoDi}<br />
+                    <strong>Thành phố đến:</strong> {item.ThanhPhoDen}<br />
+                    <strong>Hạng vé:</strong> {item.HangVe}<br />
+                    <strong>Giá vé:</strong> {item.GiaVe} vnd<br />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {error && (
+            <div className="mt-4 bg-red-100 p-4 rounded-md">
+              <p className="text-red-600">{error}</p>
+            </div>
+          )}
 
       <div class="info-section mx-auto bg-white shadow-md p-6">
         <h2 class="text-2xl">Tạo ra trải nghiệm Emirates của riêng bạn</h2>

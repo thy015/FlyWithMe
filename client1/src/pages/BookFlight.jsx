@@ -28,8 +28,10 @@ const BookFlight = () => {
       );
       console.log("Sent MaChuyenBay successfully");
       setChosenFlight(flight.MaChuyenBay);
+      console.log(flight.MaChuyenBay)
       setSuccessMessage("Chọn vé thành công!");
       setTotalPrice(flight.GiaVe);
+      localStorage.setItem('flight', JSON.stringify(flight));
     } catch (error) {
       console.error("Error sending flight details:", error);
     }
@@ -66,10 +68,14 @@ const BookFlight = () => {
         alert("You need to be logged in to complete the payment.");
         return;
     }
+    const updatedPassengerInfo = {
+      ...passengerInfo,
+      MaChuyenBay: chosenFlight 
+    };
     try {
       const response = await axios.post(
         "http://localhost:4000/searchFlight/passengerChose",
-        { ...passengerInfo }, 
+        updatedPassengerInfo, 
         {
           headers: {
               Authorization: `Bearer ${token}`
@@ -78,6 +84,8 @@ const BookFlight = () => {
       );
       if (response.status === 201) {
         alert("Passenger and payment data inserted successfully");
+        localStorage.setItem('passengerInfo', JSON.stringify(passengerInfo));
+        localStorage.setItem('totalPrice', totalPrice);
         navigate("/Done",{ state: { passengerInfo, chosenFlight, totalPrice } });
       }
     } catch (error) {
@@ -102,7 +110,7 @@ const BookFlight = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>Mã chuyến bay</th>
+                    <th>Mã vé</th>
                     <th>Hãng bay</th>
                     <th>Máy bay</th>
                     <th>Từ - Đến</th>
@@ -114,7 +122,7 @@ const BookFlight = () => {
                 </thead>
                 <tbody>
                   {flights.map((flight, index) => (
-                    <tr key={flight.MaChuyenBay} className="">
+                    <tr key={flight.MaVe} className="">
                       <td>{flight.MaChuyenBay}</td>
                       <td>{flight.TenHang}</td>
                       <td>{flight.TenMayBay}</td>
