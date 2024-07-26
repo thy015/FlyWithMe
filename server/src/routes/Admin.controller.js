@@ -182,6 +182,64 @@ deleteSanBay = async (req, res) => {
       res.status(500).json({ message: 'Failed to update san bay' });
     }
 }
+
+addTicket = async (req, res) => {
+    const { MaVe, LoaiVe, HangVe, GiaVe, SoVe, TinhTrangVe, MaChuyenBay } = req.body;
+
+    if (!MaVe || !LoaiVe || !HangVe || !GiaVe || !SoVe || !TinhTrangVe || !MaChuyenBay) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try {
+        const result = await db1.query(
+            'INSERT INTO ve (MaVe, LoaiVe, HangVe, GiaVe, SoVe, TinhTrangVe, MaChuyenBay) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [MaVe, LoaiVe, HangVe, GiaVe, SoVe, TinhTrangVe, MaChuyenBay]
+        );
+        res.status(201).json({ message: 'Ticket added successfully', result });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding ticket', error });
+    }
+};
+
+deleteTicket = async (req, res) => {
+    const { MaVe } = req.params;
+
+    if (!MaVe) {
+        return res.status(400).json({ message: 'Ticket ID is required' });
+    }
+
+    try {
+        const result = await db1.query('DELETE FROM ve WHERE MaVe = ?', [MaVe]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+        res.status(200).json({ message: 'Ticket deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting ticket', error });
+    }
+};
+
+updateTicket = async (req, res) => {
+    const { MaVe } = req.params;
+    const { LoaiVe, HangVe, GiaVe, SoVe, TinhTrangVe, MaChuyenBay } = req.body;
+
+    if (!MaVe || !LoaiVe || !HangVe || !GiaVe || !SoVe || !TinhTrangVe || !MaChuyenBay) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try {
+        const result = await db1.query(
+            'UPDATE ve SET LoaiVe = ?, HangVe = ?, GiaVe = ?, SoVe = ?, TinhTrangVe = ?, MaChuyenBay = ? WHERE MaVe = ?',
+            [LoaiVe, HangVe, GiaVe, SoVe, TinhTrangVe, MaChuyenBay, MaVe]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+        res.status(200).json({ message: 'Ticket updated successfully', result });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating ticket', error });
+    }
+};
 module.exports={
     addFlight,
     deleteFlight,
@@ -194,5 +252,8 @@ module.exports={
     deleteRoute,
     addSanBay,
     deleteSanBay,
-    updateSanBay
+    updateSanBay,
+    addTicket,
+    deleteTicket,
+    updateTicket
 }      

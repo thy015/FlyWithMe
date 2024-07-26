@@ -75,11 +75,14 @@ const signInAdmin = async (credentials) => {
         if (passWord !== admin.MatKhau) {  
             return { status: 'ERROR', message: 'Invalid password' };
         }
-
+        const access_token = await generalAccessTokens({
+            id: admin.MaTK,
+        });
         return {
             status: 'OK',
             message: 'Sign-in successful',
-            QuyenSuDung: admin.QuyenSuDung
+            QuyenSuDung: admin.QuyenSuDung,
+            access_token:access_token
         };
     } catch (e) {
         console.error('Error during sign-in:', e);

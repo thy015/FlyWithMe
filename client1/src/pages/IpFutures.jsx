@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
 const IpFutures = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageClick = (imageInfo) => {
+    setSelectedImage(imageInfo);
+  };
+
+  const imageData = [
+    {
+      src: "https://i.pinimg.com/564x/2b/1d/93/2b1d9391d514b1acee24a21fbd807b90.jpg",
+      alt: "First Class Image",
+      title: "Hạng Nhất",
+      description: "Trải nghiệm hành trình Hạng Nhất của riêng bạn. Trượt cánh cửa để có không gian riêng tư tại buồng Private Suite, điều chỉnh ánh sáng cho dễ chịu, thưởng thức ẩm thực và giải trí theo sở thích riêng của bạn.",   
+
+    },
+    {
+      src: "https://dulichhangkhong.com.vn/ve-may-bay/vnt_upload/news/09_2021/ve-may-bay-hang-pho-thong-8.jpg",
+      alt: "Economy Class Image",
+      title: "Hạng Phổ thông",
+      description: "Trải nghiệm hạng Phổ thông như thể được nâng hạng. Tựa lưng thật thoải mái, thưởng thức những bữa ăn ngon miệng và khám phá hàng ngàn bộ phim, chương trình truyền hình và hơn thế nữa.",
+    },
+  ];
   return (
     <div className="bg-white mt-[-50px]">
         <div 

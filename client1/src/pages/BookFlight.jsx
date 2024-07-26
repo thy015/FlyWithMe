@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DatePicker } from "antd";
+import { DatePicker, notification } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 const BookFlight = () => {
@@ -89,7 +89,7 @@ const BookFlight = () => {
         navigate("/Done",{ state: { passengerInfo, chosenFlight, totalPrice } });
       }
     } catch (error) {
-      alert("Error inserting data: " + error.response.data.message);
+      alert("Please log in before booking: " + error.response.data.message);
     }
   };
 

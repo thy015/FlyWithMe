@@ -31,6 +31,10 @@ const Admin = () => {
   const [loadingAirports, setLoadingAirports] = useState(true);
   const [editingAirport, setEditingAirport] = useState(null);
   const [isAirportModalOpen, setIsAirportModalOpen] = useState(false);
+  const [tickets, setTickets] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loadingTicket, setLoadingTicket] = useState(false)
+  const [editingTicket, setEditingTicket] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -85,13 +89,25 @@ const Admin = () => {
         setLoadingAirports(false);
       }
     };
-
+    const fetchTickets = async () => {
+      setLoadingTicket(true);
+      try {
+        const response = await axios.get("http://localhost:4000/Admin/existedTicket");
+        setTickets(response.data);
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+      } finally {
+        setLoadingTicket(false);
+      }
+    };
 
     fetchCustomers();
     fetchFlights();
     fetchRoutes();
     fetchAirports();
+    fetchTickets();
   }, []);
+
   //flight
   const handleAddFlight = () => {
     setEditingFlight(null);
@@ -309,6 +325,49 @@ const Admin = () => {
       notification.error({ message: "Failed to add/update airport" });
     }
   };
+
+  //ticket
+  const handleAddTicket = () => {
+    setEditingTicket(null);
+    form.resetFields();
+    setIsModalVisible(true);
+  };
+
+  const handleUpdateTicket = (ticket) => {
+    setEditingTicket(ticket);
+    form.setFieldsValue(ticket);
+    setIsModalVisible(true);
+  };
+
+  const handleDeleteTicket = async (MaVe) => {
+    try {
+      await axios.delete(`http://localhost:4000/Admin/deleteTicket/${MaVe}`);
+      setTickets(tickets.filter((ticket) => ticket.MaVe !== MaVe));
+      form.resetFields();
+      notification.success({ message: "Ticket deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+      notification.error({ message: "Failed to delete ticket" });
+    }
+  };
+
+  const handleTicketSubmit = async (values) => {
+    try {
+      if (editingTicket) {
+        await axios.put(`http://localhost:4000/Admin/updateTicket/${values.MaVe}`, values);
+        notification.success({ message: 'Ticket updated successfully' });
+      } else {
+        await axios.post('http://localhost:4000/Admin/addTicket', values);
+        notification.success({ message: 'Ticket added successfully' });
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+      setTickets(await axios.get("http://localhost:4000/Admin/existedTicket").then((res) => res.data));
+    } catch (error) {
+      console.error('Error submitting ticket:', error);
+      notification.error({ message: 'Failed to add/update ticket' });
+    }
+  };
   //flight colums
   const flightColumns = [
     { title: "MaChuyenBay", dataIndex: "MaChuyenBay", key: "MaChuyenBay" },
@@ -410,6 +469,37 @@ const airportColumns = [
     ),
   },
 ];
+
+//ticket
+const ticketColumns = [
+  { title: 'MaVe', dataIndex: 'MaVe', key: 'MaVe' },
+  { title: 'LoaiVe', dataIndex: 'LoaiVe', key: 'LoaiVe' },
+  { title: 'HangVe', dataIndex: 'HangVe', key: 'HangVe' },
+  { title: 'GiaVe', dataIndex: 'GiaVe', key: 'GiaVe' },
+  { title: 'SoVe', dataIndex: 'SoVe', key: 'SoVe' },
+  { title: 'TinhTrangVe', dataIndex: 'TinhTrangVe', key: 'TinhTrangVe' },
+  { title: 'MaChuyenBay', dataIndex: 'MaChuyenBay', key: 'MaChuyenBay' },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (_, record) => (
+      <>
+        <Button
+          onClick={() => handleUpdateTicket(record)}
+          style={{ marginRight: 8 }}
+        >
+          Edit
+        </Button>
+        <Button
+          onClick={() => handleDeleteTicket(record.MaVe)}
+          danger
+        >
+          Delete
+        </Button>
+      </>
+    ),
+  },
+];
   return (
     <div className="mt-4">
       <Row gutter={16}>
@@ -452,6 +542,7 @@ const airportColumns = [
           />
         </Col>
 
+    </Row>
         <Row gutter={16}>
           <Col span={24} >
             <h2 className="text-[36px] text-[#003278]">Route Management</h2>
@@ -489,8 +580,26 @@ const airportColumns = [
           rowKey="MaSB"
         />
       </Col>
-    </Row>
       </Row>
+      <Row gutter={16}>
+      <Col span={24}>
+        <h2 className="text-[36px] text-[#003278]">Ticket Management</h2>
+        <Button
+          type="primary"
+          onClick={handleAddTicket}
+          style={{ marginBottom: 16 }}
+          className="float-right"
+        >
+          Add Ticket
+        </Button>
+        <Table
+          dataSource={tickets}
+          columns={ticketColumns}
+          loading={loadingTicket}
+          rowKey="MaVe"
+        />
+      </Col>
+    </Row>
       <Modal
         title={editingFlight ? "Edit Flight" : "Add Flight"}
         visible={isFlightModalVisible}
@@ -687,6 +796,75 @@ const airportColumns = [
         </Form.Item>
       </Form>
     </Modal>
+
+
+
+    <Modal
+      title={editingTicket ? 'Edit Ticket' : 'Add Ticket'}
+      visible={isModalVisible}
+      onCancel={() => {
+        setIsModalVisible(false);
+        form.resetFields(); 
+      }}
+      onOk={() => form.submit()}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleTicketSubmit}
+      >
+        <Form.Item
+          name="MaVe"
+          label="Ticket Code"
+          rules={[{ required: true, message: 'Please input the ticket code!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="LoaiVe"
+          label="Ticket Type"
+          rules={[{ required: true, message: 'Please input the ticket type!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="HangVe"
+          label="Class"
+          rules={[{ required: true, message: 'Please input the class!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="GiaVe"
+          label="Price"
+          rules={[{ required: true, message: 'Please input the price!' }]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item
+          name="SoVe"
+          label="Number of Tickets"
+          rules={[{ required: true, message: 'Please input the number of tickets!' }]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item
+          name="TinhTrangVe"
+          label="Status"
+          rules={[{ required: true, message: 'Please input the status!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="MaChuyenBay"
+          label="Flight Code"
+          rules={[{ required: true, message: 'Please select the flight code!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </Modal>
+
     </div>
   );
 };

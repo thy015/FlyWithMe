@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addFlight, deleteFlight, updateFlight,addCustomer,updateCustomer,deleteCustomer,addRoute,updateRoute,deleteRoute, addSanBay,deleteSanBay,updateSanBay} = require('./Admin.controller');
+const { addFlight, deleteFlight, updateFlight,addCustomer,updateCustomer,deleteCustomer,addRoute,updateRoute,deleteRoute, addSanBay,deleteSanBay,updateSanBay,addTicket,deleteTicket,updateTicket} = require('./Admin.controller');
 const { db1 } = require("../models/connect");
 
 router.post('/addFlight', addFlight);
@@ -19,6 +19,20 @@ router.post('/addAirport', addSanBay);
 router.delete('/deleteAirport/:MaSB', deleteSanBay);
 router.put('/updateAirport/:MaSB', updateSanBay);
 
+router.post('/addTicket', addTicket);
+router.delete('/deleteTicket/:MaVe', deleteTicket);
+router.put('/updateTicket/:MaVe', updateTicket);
+
+router.get('/existedTicket',async(req,res)=>{
+    try {
+        const query = 'SELECT * FROM ve';
+        const [rows] = await db1.query(query);
+        res.status(200).json(rows);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ status: 'ERROR', message: 'Internal server error' });
+    }
+})
 router.get('/existedFlight', async (req, res) => {
     try {
         const query = 'SELECT * FROM chuyenbay';
